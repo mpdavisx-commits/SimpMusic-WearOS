@@ -1,0 +1,33 @@
+name: Compilar APK Automático
+
+on:
+  push:
+    branches: [ main, master, dev ] # Se activa al subir cambios a estas ramas
+  workflow_dispatch: # Permite activar la compilación manualmente con un botón
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Descargar el código del Fork
+      uses: actions/checkout@v4
+
+    - name: Configurar Java JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Otorgar permisos de ejecución a Gradle
+      run: chmod +x ./gradlew
+
+    - name: Compilar APK (Modo Release / Sin Firmar)
+      run: ./gradlew assembleRelease
+
+    - name: Subir APK generado a GitHub
+      uses: actions/upload-artifact@v4
+      with:
+        name: APK-Compilado-Fork
+        path: app/build/outputs/apk/release/*.apk
