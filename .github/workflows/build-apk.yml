@@ -22,6 +22,9 @@ jobs:
 
     - name: Otorgar permisos de ejecución a Gradle
       run: chmod +x ./gradlew
+       - name: Create local.properties with Sentry Token
+   run: |
+     echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" > local.properties
 
     - name: Compilar APK (Modo Release / Sin Firmar)
       run: ./gradlew assembleRelease
